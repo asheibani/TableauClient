@@ -1,5 +1,5 @@
 # TableauClient
-Java client for Tableau server
+Java client for Tableau server.
 
 Proof of concept to integrate with a Tableau server.
 
