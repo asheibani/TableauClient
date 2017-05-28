@@ -3,6 +3,9 @@ Java client for Tableau server.
 
 Proof of concept to integrate with a Tableau server.
 
+This uses trusted authentication only at this time (https://onlinehelp.tableau.com/current/server/en-us/trusted_auth.htm), 
+when I have some time I will try to add SAML as well (https://onlinehelp.tableau.com/current/server/en-us/saml.htm).
+
 This application will pull the views of a given workbook.
 It will also generate the embeded code to display a view.
 
