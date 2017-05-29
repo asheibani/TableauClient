@@ -1,4 +1,4 @@
-package org.sheibani.tableauclient.model
+package org.sheibani.tableauclient.dto
 
 /**
  * Created by asheibani on 5/28/17.

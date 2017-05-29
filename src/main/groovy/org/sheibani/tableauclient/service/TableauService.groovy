@@ -3,8 +3,11 @@ package org.sheibani.tableauclient.service
 import org.sheibani.tableauclient.client.TableauApiClient
 import org.sheibani.tableauclient.client.TableauClient
 import org.sheibani.tableauclient.config.TableauConfig
+import org.sheibani.tableauclient.dto.User
+import org.sheibani.tableauclient.model.AddUserToSiteResponse
 import org.sheibani.tableauclient.model.CredentialsResponse
-import org.sheibani.tableauclient.model.TableauView
+import org.sheibani.tableauclient.dto.TableauView
+import org.sheibani.tableauclient.model.QueryUsersResponse
 import org.sheibani.tableauclient.model.WorkbookResponse
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
@@ -42,6 +45,45 @@ class TableauService {
             return tableauView
         }
         return views
+    }
+
+    public String addUser(String username, String siteRole, String fullName, String password) {
+        AddUserToSiteResponse response1 = apiClient.addUserToSite(token, config.siteId, username, siteRole)
+
+        apiClient.updateUser(token, config.siteId, response1.user.id, fullName, siteRole, password)
+
+        return response1.user.id
+    }
+
+    public List<User> getUsers() {
+        QueryUsersResponse response = apiClient.getUsersOnSite(token, config.siteId)
+
+        List<User> users = response.users.user.collect { QueryUsersResponse.User user ->
+            User user1 = new User()
+            user1.id = user.id
+            user1.username = user.name
+            user1.siteRole = user.siteRole
+            return user1
+        }
+
+        return users
+    }
+
+    public User searchUserByUsername(String username) {
+        QueryUsersResponse response = apiClient.searchUsersOnSiteByUsername(token, config.siteId, "name:eq:" + username)
+        if(response.users.user.isEmpty()) {
+            return null
+        } else {
+            User user = new User()
+            user.id = response.users.user[0].id
+            user.username = response.users.user[0].name
+            user.siteRole = response.users.user[0].siteRole
+            return user
+        }
+    }
+
+    public void removeUser(String userId) {
+        apiClient.removeUserFromSite(token, config.siteId, userId)
     }
 
     public String getEmbededCode(String contentUrl) {
